@@ -86,8 +86,16 @@ void mm_start(struct mm *m_info, int num_threads, int m_size, int d, int tnum)
         m_info->j_end = m_size;
     }
 
-    m_info->k_begin = 0;
-    m_info->k_end = m_size;
+    if (d == 2)
+    {
+        m_info->k_begin = tnum * porportion;
+        m_info->k_end = m_info->k_begin + porportion;
+    }
+    else
+    {
+        m_info->k_begin = 0;
+        m_info->k_end = m_size;
+    }
 }
 
 void get_help()
@@ -96,7 +104,7 @@ void get_help()
                     "    -h: display what you are reading now\n"
                     "    -m: matrix size\n"
                     "    -t: number of threads\n"
-                    "    -d: data distribution strategy (0  = rows, 1 = columns, default = 0)\n"
+                    "    -d: data distribution strategy (0  = rows, 1 = columns, 2 = blocks, default = 0)\n"
                     "    -v: display output matrix\n");
     fprintf(stdout, "\nRequirements:\n"
                     "    1) -m and -t are required arguments\n"
