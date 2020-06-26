@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <time.h>
 
 typedef int bool;
 
@@ -24,6 +25,8 @@ typedef int bool;
         perror(msg);             \
         exit(EXIT_FAILURE);      \
     } while (0)
+
+/* Matrices */
 
 int **matA;
 int **matB;
@@ -179,15 +182,15 @@ int main(int argc, char **argv)
 
     /* Allocate memory for A, B and C */
 
-    matA = (int **)malloc(m_size * (sizeof(int *)));
-    matB = (int **)malloc(m_size * (sizeof(int *)));
-    matC = (int **)malloc(m_size * (sizeof(int *)));
+    matA = (int **)calloc(m_size, (sizeof(int *)));
+    matB = (int **)calloc(m_size, (sizeof(int *)));
+    matC = (int **)calloc(m_size, (sizeof(int *)));
 
     for (int i = 0; i < m_size; i++)
     {
-        matA[i] = (int *)malloc(m_size * sizeof(int));
-        matB[i] = (int *)malloc(m_size * sizeof(int));
-        matC[i] = (int *)malloc(m_size * sizeof(int));
+        matA[i] = (int *)calloc(m_size, sizeof(int));
+        matB[i] = (int *)calloc(m_size, sizeof(int));
+        matC[i] = (int *)calloc(m_size, sizeof(int));
     }
 
     /* Generating random values in matA and matB */
@@ -196,30 +199,41 @@ int main(int argc, char **argv)
     {
         for (int j = 0; j < m_size; j++)
         {
-            matA[i][j] = rand() % 10;
-            matB[i][j] = rand() % 10;
+            matA[i][j] = rand() % 100;
+            matB[i][j] = rand() % 100;
         }
     }
 
-    /* Displaying matA */
+    /*
+    ############################# MATRIX PRINT ##############################
+    */
 
-    printf("\nMatrix A\n");
-    for (int i = 0; i < m_size; i++)
+    if (display)
     {
-        for (int j = 0; j < m_size; j++)
-            printf("%d ", matA[i][j]);
-        printf("\n");
+        /* Displaying matA */
+
+        printf("\nMatrix A\n");
+        for (int i = 0; i < m_size; i++)
+        {
+            for (int j = 0; j < m_size; j++)
+                printf("%d ", matA[i][j]);
+            printf("\n");
+        }
+
+        /* Displaying matB */
+
+        printf("\nMatrix B\n");
+        for (int i = 0; i < m_size; i++)
+        {
+            for (int j = 0; j < m_size; j++)
+                printf("%d ", matB[i][j]);
+            printf("\n");
+        }
     }
 
-    /* Displaying matB */
-
-    printf("\nMatrix B\n");
-    for (int i = 0; i < m_size; i++)
-    {
-        for (int j = 0; j < m_size; j++)
-            printf("%d ", matB[i][j]);
-        printf("\n");
-    }
+    /*
+    ################################ THREADS #################################
+    */
 
     /* Initialize thread creation attributes */
 
@@ -235,7 +249,10 @@ int main(int argc, char **argv)
 
     tinfo = (struct thread_info *)calloc(num_threads, sizeof(struct thread_info));
 
-    /* Create one thread for each command-line argument */
+    /* Create one thread for each matrix block */
+
+    time_t start, end;
+    time(&start);
 
     for (int tnum = 0; tnum < num_threads; tnum++)
     {
@@ -260,6 +277,9 @@ int main(int argc, char **argv)
             handle_error_en(s, "pthread_join");
     }
 
+    time(&end);
+    double time_spent = end - start;
+
     /* Displaying matC */
 
     if (display)
@@ -272,6 +292,8 @@ int main(int argc, char **argv)
             printf("\n");
         }
     }
+
+    printf("\nTime spent: %f\n", time_spent);
 
     free(tinfo);
     return 0;
