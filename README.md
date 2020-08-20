@@ -9,5 +9,5 @@ All you need to do is specify the matrix size, the number of threads and the dat
 - Compilation
   - make
 - Run
-  - ./mm_p -m -t [-d][-v][-h] (parallel version)
-  - ./mm_seq -m [-v][-h] (sequencial version)
+  - `./mm_p -m -t [-d][-v][-h]` (parallel version)
+  - `./mm_seq -m [-v][-h]` (sequencial version)
