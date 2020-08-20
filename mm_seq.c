@@ -37,13 +37,8 @@ void get_help()
     fprintf(stdout, "Options are:\n"
                     "    -h: display what you are reading now\n"
                     "    -m: matrix size\n"
-                    "    -t: number of threads\n"
-                    "    -d: data distribution strategy (0  = rows, 1 = columns, 2 = blocks, default = 0)\n"
                     "    -v: display output matrix\n");
-    fprintf(stdout, "\nRequirements:\n"
-                    "    1) -m and -t are required arguments\n"
-                    "    2) Number of threads must be at least 2\n"
-                    "    3) Matrix size must be multiple of number of threads\n");
+    fprintf(stdout, "\nRequired: -m\n");
 }
 
 int main(int argc, char **argv)
@@ -54,7 +49,7 @@ int main(int argc, char **argv)
     int opt, m_size = -1;
     bool display = false;
 
-    while ((opt = getopt(argc, argv, "m:d:vh")) != -1)
+    while ((opt = getopt(argc, argv, "m:vh")) != -1)
     {
         switch (opt)
         {
@@ -117,24 +112,27 @@ int main(int argc, char **argv)
         }
     }
 
-    /* Displaying matA */
-
-    printf("\nMatrix A\n");
-    for (int i = 0; i < m_size; i++)
+    if (display)
     {
-        for (int j = 0; j < m_size; j++)
-            printf("%d ", matA[i][j]);
-        printf("\n");
-    }
+        /* Displaying matA */
 
-    /* Displaying matB */
+        printf("\nMatrix A\n");
+        for (int i = 0; i < m_size; i++)
+        {
+            for (int j = 0; j < m_size; j++)
+                printf("%d ", matA[i][j]);
+            printf("\n");
+        }
 
-    printf("\nMatrix B\n");
-    for (int i = 0; i < m_size; i++)
-    {
-        for (int j = 0; j < m_size; j++)
-            printf("%d ", matB[i][j]);
-        printf("\n");
+        /* Displaying matB */
+
+        printf("\nMatrix B\n");
+        for (int i = 0; i < m_size; i++)
+        {
+            for (int j = 0; j < m_size; j++)
+                printf("%d ", matB[i][j]);
+            printf("\n");
+        }
     }
 
     time_t start, end;
